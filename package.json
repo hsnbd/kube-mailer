@@ -1,0 +1,24 @@
+{
+  "name": "kube-mailer",
+  "version": "1.0.0",
+  "description": "Microservice mail system with UI, primary server, decorator, and worker",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm run install:ui && npm run install:primary && npm run install:decorator && npm run install:worker",
+    "install:ui": "cd services/mail-ui && npm install",
+    "install:primary": "cd services/primary-server && npm install",
+    "install:decorator": "cd services/decorator-server && npm install",
+    "install:worker": "cd services/worker && npm install",
+    "start:ui": "cd services/mail-ui && npm start",
+    "start:primary": "cd services/primary-server && npm start",
+    "start:decorator": "cd services/decorator-server && npm start",
+    "start:worker": "cd services/worker && npm start",
+    "dev": "concurrently \"npm run start:primary\" \"npm run start:decorator\" \"npm run start:worker\" \"npm run start:ui\""
+  },
+  "keywords": ["microservice", "mail", "kubernetes"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

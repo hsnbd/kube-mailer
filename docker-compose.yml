@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mail-ui:
+    build: ./services/mail-ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - primary-server
+    networks:
+      - kube-mailer-network
+
+  primary-server:
+    build: ./services/primary-server
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DECORATOR_SERVICE_URL=http://decorator-server:3002
+      - NODE_ENV=production
+    depends_on:
+      - decorator-server
+    networks:
+      - kube-mailer-network
+
+  decorator-server:
+    build: ./services/decorator-server
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - WORKER_SERVICE_URL=http://worker:3003
+      - NODE_ENV=production
+    depends_on:
+      - worker
+    networks:
+      - kube-mailer-network
+
+  worker:
+    build: ./services/worker
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - NODE_ENV=production
+      - EMAIL_USER=${EMAIL_USER:-}
+      - EMAIL_PASS=${EMAIL_PASS:-}
+    networks:
+      - kube-mailer-network
+
+networks:
+  kube-mailer-network:
+    driver: bridge
